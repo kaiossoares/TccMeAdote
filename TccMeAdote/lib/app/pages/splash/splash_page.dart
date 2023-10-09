@@ -92,7 +92,7 @@ class Splash extends StatelessWidget {
       margin: EdgeInsets.only(top: constraints.maxHeight * 0.0),
       child: AdoteButton(
         width: double.infinity,
-        label: 'ACESSAR',
+        label: 'Acessar',
         onPressed: () {
           Navigator.pushReplacementNamed(context, '/pets');
         },
