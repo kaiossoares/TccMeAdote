@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
+import '../../data/http/http_client.dart';
+import '../../data/models/animal_type_model.dart';
+import '../../data/repositories/animal_type_repository.dart';
 import '../../ui/widgets/adote_button.dart';
-import 'package:http/http.dart' as http;
 
 class PostPage extends StatefulWidget {
   @override
@@ -12,7 +11,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   String _selectedAge = 'recém-nascido';
-  String _selectedCategory = '';
+  late String _selectedCategory;
   List<String> _categories = [];
 
   List<String> _ages = [
@@ -47,90 +46,87 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    _fetchCategories(); // Chama a função para buscar as categorias da API ao iniciar a tela
+    _selectedCategory = '';
+    _loadCategories();
   }
 
-  Future<void> _fetchCategories() async {
-    final response =
-        await http.get(Uri.parse('http://192.168.15.64:8080/animal-types'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      List<String> categories = [];
-
-      for (var category in data) {
-        categories.add(category['animalTypes']);
-      }
+  Future<void> _loadCategories() async {
+    try {
+      final repository = AnimalTypeRepository(client: HttpClient());
+      List<AnimalTypeModel> animalTypes = await repository.getAnimalTypes();
 
       setState(() {
-        _categories = categories;
-        _selectedCategory = _categories.isNotEmpty
-            ? _categories[0]
-            : '';
+        _categories = animalTypes.map((type) => type.animalTypes).toList();
+        if (_categories.isNotEmpty) {
+          _selectedCategory = _categories[0];
+        }
       });
-    } else {
-      throw Exception('Falha ao carregar as categorias da API');
+    } catch (e) {
+      print('Erro ao carregar as categorias: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Iserir seu pet no App'),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Nome'),
+      appBar: AppBar(
+        title: const Text('Inserir seu pet no App'),
+      ),
+      body: _categories.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Nome'),
+                      ),
+                      const SizedBox(height: 30),
+                      Text('Idade:'),
+                      DropdownButton<String>(
+                        value: _selectedAge,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedAge = newValue!;
+                          });
+                        },
+                        items: _ages.map((String age) {
+                          return DropdownMenuItem<String>(
+                            value: age,
+                            child: Text(age),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 20),
+                      Text('Categoria:'),
+                      DropdownButton<String>(
+                        value: _selectedCategory,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedCategory = newValue!;
+                          });
+                        },
+                        items: _categories.map((String category) {
+                          return DropdownMenuItem<String>(
+                            value: category,
+                            child: Text(category),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 30),
+                      AdoteButton(
+                        width: double.infinity,
+                        label: 'Postar',
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 30),
-                  Text('Idade:'),
-                  DropdownButton<String>(
-                    value: _selectedAge,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedAge = newValue!;
-                      });
-                    },
-                    items: _ages.map((String age) {
-                      return DropdownMenuItem<String>(
-                        value: age,
-                        child: Text(age),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 20),
-                  Text('Categoria:'),
-                  DropdownButton<String>(
-                    value: _selectedCategory,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue!;
-                      });
-                    },
-                    items: _categories.map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 30),
-                  AdoteButton(
-                    width: double.infinity,
-                    label: 'Postar',
-                    onPressed: () {},
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ));
+    );
   }
 }
