@@ -18,6 +18,7 @@ class _PostPageState extends State<PostPage> {
   List<BreedsModel> _breeds = [];
   String _selectedBreed = '';
   late int _selectedCategoryId;
+  late TextEditingController _descriptionController;
 
   List<String> _ages = [
     'recém-nascido',
@@ -55,6 +56,7 @@ class _PostPageState extends State<PostPage> {
     _loadCategories();
     _selectedCategoryId = 1;
     _fetchBreeds(_selectedCategoryId);
+    _descriptionController = TextEditingController();
   }
 
   Future<void> _loadCategories() async {
@@ -90,6 +92,12 @@ class _PostPageState extends State<PostPage> {
   }
 
   @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -110,6 +118,7 @@ class _PostPageState extends State<PostPage> {
                       const SizedBox(height: 30),
                       Text('Idade:'),
                       DropdownButton<String>(
+                        isExpanded: true,
                         value: _selectedAge,
                         onChanged: (String? newValue) {
                           setState(() {
@@ -126,6 +135,7 @@ class _PostPageState extends State<PostPage> {
                       const SizedBox(height: 30),
                       Text('Categoria:'),
                       DropdownButton<String>(
+                        isExpanded: true,
                         value: _selectedCategory,
                         onChanged: (String? newValue) {
                           setState(() {
@@ -145,6 +155,7 @@ class _PostPageState extends State<PostPage> {
                       const SizedBox(height: 30),
                       Text('Raça:'),
                       DropdownButton<String>(
+                        isExpanded: true,
                         value: _selectedBreed,
                         onChanged: (String? newValue) {
                           setState(() {
@@ -157,6 +168,15 @@ class _PostPageState extends State<PostPage> {
                             child: Text(breed.breedName),
                           );
                         }).toList(),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _descriptionController,
+                        decoration: const InputDecoration(
+                          labelText: 'Descrição do Animal',
+                          hintText: 'Digite uma breve descrição',
+                        ),
+                        maxLines: 3,
                       ),
                       const SizedBox(height: 30),
                       AdoteButton(
