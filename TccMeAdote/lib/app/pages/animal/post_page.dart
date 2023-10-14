@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../data/http/http_client.dart';
 import '../../data/models/animal_type_model.dart';
+import '../../data/models/breeds_model.dart';
 import '../../data/repositories/animal_type_repository.dart';
+import '../../data/repositories/breeds_repository.dart';
 import '../../ui/widgets/adote_button.dart';
 
 class PostPage extends StatefulWidget {
@@ -13,6 +15,9 @@ class _PostPageState extends State<PostPage> {
   String _selectedAge = 'recém-nascido';
   late String _selectedCategory;
   List<String> _categories = [];
+  List<BreedsModel> _breeds = [];
+  String _selectedBreed = '';
+  late int _selectedCategoryId;
 
   List<String> _ages = [
     'recém-nascido',
@@ -48,6 +53,8 @@ class _PostPageState extends State<PostPage> {
     super.initState();
     _selectedCategory = '';
     _loadCategories();
+    _selectedCategoryId = 1;
+    _fetchBreeds(_selectedCategoryId);
   }
 
   Future<void> _loadCategories() async {
@@ -63,6 +70,22 @@ class _PostPageState extends State<PostPage> {
       });
     } catch (e) {
       print('Erro ao carregar as categorias: $e');
+    }
+  }
+
+  Future<void> _fetchBreeds(int categoryId) async {
+    try {
+      final repository = BreedsRepository(client: HttpClient());
+      List<BreedsModel> breeds = await repository.getBreeds(categoryId);
+
+      setState(() {
+        _breeds = breeds;
+        if (_breeds.isNotEmpty) {
+          _selectedBreed = _breeds[0].breedName;
+        }
+      });
+    } catch (e) {
+      print('Erro ao carregar as raças: $e');
     }
   }
 
@@ -100,19 +123,38 @@ class _PostPageState extends State<PostPage> {
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
                       Text('Categoria:'),
                       DropdownButton<String>(
                         value: _selectedCategory,
                         onChanged: (String? newValue) {
                           setState(() {
                             _selectedCategory = newValue!;
+                            _selectedCategoryId =
+                                (_selectedCategory == 'Cachorro') ? 1 : 2;
+                            _fetchBreeds(_selectedCategoryId);
                           });
                         },
                         items: _categories.map((String category) {
                           return DropdownMenuItem<String>(
                             value: category,
                             child: Text(category),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 30),
+                      Text('Raça:'),
+                      DropdownButton<String>(
+                        value: _selectedBreed,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedBreed = newValue!;
+                          });
+                        },
+                        items: _breeds.map((BreedsModel breed) {
+                          return DropdownMenuItem<String>(
+                            value: breed.breedName,
+                            child: Text(breed.breedName),
                           );
                         }).toList(),
                       ),
