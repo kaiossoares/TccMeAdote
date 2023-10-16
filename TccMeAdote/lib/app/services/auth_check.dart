@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tcc_me_adote/app/pages/animal/pet_list_page.dart';
 import 'package:tcc_me_adote/app/pages/login/login_page.dart';
 import 'package:tcc_me_adote/app/services/auth_service.dart';
 

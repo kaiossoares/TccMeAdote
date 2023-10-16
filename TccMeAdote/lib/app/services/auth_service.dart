@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../data/http/http_client.dart';
+import '../data/models/user_model.dart';
+import '../data/repositories/user_repository.dart';
+
 class AuthException implements Exception {
   String message;
 
@@ -36,13 +40,20 @@ class AuthService extends ChangeNotifier {
     return regex.hasMatch(email);
   }
 
-  registrar(String email, String senha, BuildContext context) async {
+  registrar(String name, String email, String senha, BuildContext context) async {
     if (!isEmailValid(email)) {
       throw AuthException('Endereço de e-mail inválido.');
     }
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       _getUser();
+
+      final IHttpClient _httpClient = HttpClient();
+      var user = UserModel(name: name, email: email, password: senha);
+
+      var userRepository = UserRepository(client: _httpClient);
+      await userRepository.registerUser(user);
+
       Navigator.pushReplacementNamed(context, '/pets');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

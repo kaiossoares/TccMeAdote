@@ -13,6 +13,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController nameController  = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   bool loading = false;
@@ -22,8 +23,9 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await context
           .read<AuthService>()
-          .registrar(emailController.text, senhaController.text, context);
+          .registrar(nameController.text, emailController.text, senhaController.text, context);
     } on AuthException catch (e) {
+      setState(() => loading = false);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message)));
     }
@@ -52,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 15,
                   ),
                   TextFormField(
+                    controller: nameController,
                     decoration: const InputDecoration(labelText: 'Nome'),
                   ),
                   const SizedBox(

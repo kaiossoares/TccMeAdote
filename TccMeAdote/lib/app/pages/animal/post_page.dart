@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tcc_me_adote/app/services/image_picker_service.dart';
 import '../../data/http/http_client.dart';
 import '../../data/models/animal_type_model.dart';
 import '../../data/models/breeds_model.dart';
 import '../../data/repositories/animal_type_repository.dart';
 import '../../data/repositories/breeds_repository.dart';
+import '../../services/firebase_storage_service.dart';
 import '../../ui/widgets/adote_button.dart';
+import 'dart:io';
 
 class PostPage extends StatefulWidget {
   @override
@@ -19,6 +23,9 @@ class _PostPageState extends State<PostPage> {
   String _selectedBreed = '';
   late int _selectedCategoryId;
   late TextEditingController _descriptionController;
+  ImagePickerService _imagePickerService = ImagePickerService();
+  FirebaseStorageService _firebaseStorageService = FirebaseStorageService();
+  List<XFile> _selectedImages = [];
 
   List<String> _ages = [
     'recém-nascido',
@@ -97,6 +104,91 @@ class _PostPageState extends State<PostPage> {
     super.dispose();
   }
 
+  Widget _buildUploadButton() {
+    return Center(
+      child: Container(
+        width: 320,
+        height: 240,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Color(0xFF3292FF),
+            width: 2.0,
+          ),
+          color: Color(0xFFF3F3F3),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(Icons.camera_alt_outlined),
+              color: Color(0xFF3292FF),
+              iconSize: 50,
+              onPressed: () async {
+                try {
+                  List<XFile>? pickedFiles =
+                      await _imagePickerService.pickImages();
+
+                  if (pickedFiles != null && pickedFiles.isNotEmpty) {
+                    setState(() {
+                      _selectedImages = pickedFiles;
+                    });
+                  } else {
+                    print('Nenhuma imagem selecionada.');
+                  }
+                } catch (e) {
+                  print('Erro durante o processo de seleção das imagens: $e');
+                }
+              },
+            ),
+            const SizedBox(height: 5),
+            Text(
+              'Incluir fotos',
+              style: TextStyle(
+                fontSize: 15,
+                color: Color(0xFF3292FF),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedImages() {
+    List<Widget> imageWidgets = _selectedImages.map((image) {
+      return Container(
+        margin: const EdgeInsets.all(8.0),
+        width: 260,
+        height: 260,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Image.file(
+            File(image.path),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }).toList();
+
+    if (_selectedImages.isNotEmpty) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            ...imageWidgets,
+            _buildUploadButton(),
+          ],
+        ),
+      );
+    } else {
+      return Center(child: _buildUploadButton());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +204,8 @@ class _PostPageState extends State<PostPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildSelectedImages(),
+                      const SizedBox(height: 20),
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'Nome'),
                       ),
@@ -182,7 +276,24 @@ class _PostPageState extends State<PostPage> {
                       AdoteButton(
                         width: double.infinity,
                         label: 'Postar',
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            if (_selectedImages.isNotEmpty) {
+                              String storagePath = 'postImages';
+                              List<File> imageFiles = _selectedImages
+                                  .map((xFile) => File(xFile.path))
+                                  .toList();
+                              List<String> imageUrls =
+                                  await _firebaseStorageService.uploadImages(
+                                      imageFiles, storagePath);
+                              print('URLs das imagens: $imageUrls');
+                            } else {
+                              print('Nenhuma imagem selecionada.');
+                            }
+                          } catch (e) {
+                            print('Erro ao postar: $e');
+                          }
+                        },
                       ),
                     ],
                   ),

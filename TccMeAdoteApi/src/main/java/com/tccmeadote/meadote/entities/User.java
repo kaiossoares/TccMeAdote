@@ -10,13 +10,10 @@ public class User {
     private Long id;
     private String name;
     private String email;
-    private String telephone;
-    private String profilePictureUrl;
-    @ManyToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
 
-    public User(){
+    private String password;
+
+    public User() {
     }
 
     public Long getId() {
@@ -43,27 +40,7 @@ public class User {
         this.email = email;
     }
 
-    public String getTelephone() {
-        return telephone;
-    }
+    public String getPassword() { return password; }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+    public void setPassword(String password) { this.password = password; }
 }
