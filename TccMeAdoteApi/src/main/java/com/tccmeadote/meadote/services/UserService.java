@@ -17,15 +17,15 @@ public class UserService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public User registerUser(User user) {
+    public User registerUser(User user, String userFirebaseUid) {
         Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             throw new IllegalArgumentException("E-mail já está em uso.");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUserFirebaseUid(userFirebaseUid);
 
         return userRepository.save(user);
     }
 }
-

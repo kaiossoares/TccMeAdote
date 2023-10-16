@@ -23,6 +23,7 @@ class UserRepository implements IUserRepository {
       'name': user.name,
       'email': user.email,
       'password': user.password,
+      'userFirebaseUid': user.userFirebaseUid,
     };
 
     final response = await client.post(

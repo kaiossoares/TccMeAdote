@@ -10,8 +10,8 @@ public class User {
     private Long id;
     private String name;
     private String email;
-
     private String password;
+    private String userFirebaseUid;
 
     public User() {
     }
@@ -43,4 +43,8 @@ public class User {
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public String getUserFirebaseUid() {return userFirebaseUid;}
+
+    public void setUserFirebaseUid(String userFirebaseUid) {this.userFirebaseUid = userFirebaseUid;}
 }

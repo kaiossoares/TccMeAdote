@@ -45,11 +45,12 @@ class AuthService extends ChangeNotifier {
       throw AuthException('Endereço de e-mail inválido.');
     }
     try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: senha);
-      _getUser();
-
       final IHttpClient _httpClient = HttpClient();
-      var user = UserModel(name: name, email: email, password: senha);
+
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
+      String userFirebaseUid = userCredential.user?.uid ?? '';
+
+      var user = UserModel(name: name, email: email, password: senha, userFirebaseUid: userFirebaseUid);
 
       var userRepository = UserRepository(client: _httpClient);
       await userRepository.registerUser(user);
