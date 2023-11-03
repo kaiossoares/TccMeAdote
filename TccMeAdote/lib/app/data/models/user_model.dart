@@ -1,5 +1,3 @@
-import '../repositories/user_repository.dart';
-
 class UserModel {
   final String name;
   final String email;

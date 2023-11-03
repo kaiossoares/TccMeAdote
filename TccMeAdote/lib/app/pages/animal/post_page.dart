@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:tcc_me_adote/app/services/image_picker_service.dart';
+import '../../data/blocs/animal_post_bloc.dart';
 import '../../data/http/http_client.dart';
 import '../../data/models/animal_type_model.dart';
 import '../../data/models/breeds_model.dart';
+import '../../data/repositories/animal_post_repository.dart';
 import '../../data/repositories/animal_type_repository.dart';
 import '../../data/repositories/breeds_repository.dart';
+import '../../services/auth_service.dart';
 import '../../services/firebase_storage_service.dart';
 import '../../ui/widgets/adote_button.dart';
 import 'dart:io';
@@ -16,54 +20,51 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  String _selectedAge = 'recém-nascido';
+  late AuthService authService;
+  late String _selectedAge;
+  late String _selectedSex = 'Macho';
   late String _selectedCategory;
-  List<String> _categories = [];
-  List<BreedsModel> _breeds = [];
-  String _selectedBreed = '';
   late int _selectedCategoryId;
-  late TextEditingController _descriptionController;
-  ImagePickerService _imagePickerService = ImagePickerService();
-  FirebaseStorageService _firebaseStorageService = FirebaseStorageService();
+  late String _selectedBreed = '';
+  late AnimalPostBloc _animalPostBloc;
+
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _animalNameController = TextEditingController();
+  final ImagePickerService _imagePickerService = ImagePickerService();
+  final FirebaseStorageService _firebaseStorageService = FirebaseStorageService();
   List<XFile> _selectedImages = [];
 
-  List<String> _ages = [
-    'recém-nascido',
-    '1 ano',
-    '2 anos',
-    '3 anos',
-    '4 anos',
-    '5 anos',
-    '6 anos',
-    '7 anos',
-    '8 anos',
-    '9 anos',
-    '10 anos',
-    '11 anos',
-    '12 anos',
-    '13 anos',
-    '14 anos',
-    '15 anos',
-    '16 anos',
-    '17 anos',
-    '18 anos',
-    '19 anos',
-    '20 anos',
-    '21 anos',
-    '22 anos',
-    '23 anos',
-    '24 anos',
-    '25 anos',
+  final List<String> _ages = List.generate(26, (index) => '${index + 1} ano');
+  List<String> _categories = [];
+  List<BreedsModel> _breeds = [];
+
+  final BreedsRepository _breedsRepository = BreedsRepository(client: HttpClient());
+
+  final List<String> _sex = [
+    'Macho',
+    'Fêmea',
   ];
 
   @override
   void initState() {
     super.initState();
+    _initializeValues();
+  }
+
+  void _initializeValues() {
     _selectedCategory = '';
-    _loadCategories();
     _selectedCategoryId = 1;
+    _loadCategories();
+    _selectedAge = _ages[0];
     _fetchBreeds(_selectedCategoryId);
-    _descriptionController = TextEditingController();
+    _initializeBloc();
+    authService = Provider.of<AuthService>(context, listen: false);
+  }
+
+  void _initializeBloc() {
+    IHttpClient httpClient = HttpClient();
+    AnimalPostRepository animalPostRepository = AnimalPostRepository(client: httpClient);
+    _animalPostBloc = AnimalPostBloc(animalPostRepository);
   }
 
   Future<void> _loadCategories() async {
@@ -101,6 +102,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void dispose() {
     _descriptionController.dispose();
+    _animalNameController.dispose();
     super.dispose();
   }
 
@@ -193,6 +195,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Inserir seu pet no App'),
       ),
       body: _categories.isEmpty
@@ -208,6 +211,7 @@ class _PostPageState extends State<PostPage> {
                       const SizedBox(height: 20),
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'Nome'),
+                        controller: _animalNameController,
                       ),
                       const SizedBox(height: 30),
                       Text('Idade:'),
@@ -223,6 +227,23 @@ class _PostPageState extends State<PostPage> {
                           return DropdownMenuItem<String>(
                             value: age,
                             child: Text(age),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 30),
+                      Text('Sexo:'),
+                      DropdownButton<String>(
+                        isExpanded: true,
+                        value: _selectedSex,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedSex = newValue!;
+                          });
+                        },
+                        items: _sex.map((String sex) {
+                          return DropdownMenuItem<String>(
+                            value: sex,
+                            child: Text(sex),
                           );
                         }).toList(),
                       ),
@@ -279,13 +300,32 @@ class _PostPageState extends State<PostPage> {
                         onPressed: () async {
                           try {
                             if (_selectedImages.isNotEmpty) {
+                              String animalName = _animalNameController.text;
+                              int animalTypeId = _selectedCategoryId;
+                              String breed = _selectedBreed;
+                              int breedId = await _breedsRepository.getBreedId(breed, animalTypeId);
+                              String sex = _selectedSex;
+                              String age = _selectedAge;
+                              String description = _descriptionController.text;
+                              String? userFirebaseUid = await authService.getUserFirebaseUid();
+
                               String storagePath = 'postImages';
-                              List<File> imageFiles = _selectedImages
-                                  .map((xFile) => File(xFile.path))
-                                  .toList();
-                              List<String> imageUrls =
-                                  await _firebaseStorageService.uploadImages(
-                                      imageFiles, storagePath);
+                              List<File> imageFiles = _selectedImages.map((xFile) => File(xFile.path)).toList();
+                              List<String> imageUrls = await _firebaseStorageService.uploadImages(imageFiles, storagePath);
+
+                              List<String> photoUrls = imageUrls;
+
+                              await _animalPostBloc.createAnimalPost(
+                                animalName: animalName,
+                                animalTypeId: animalTypeId,
+                                breedId: breedId,
+                                sex: sex,
+                                age: age,
+                                description: description,
+                                userFirebaseUid: userFirebaseUid,
+                                photoUrls: photoUrls,
+                              );
+
                               print('URLs das imagens: $imageUrls');
                             } else {
                               print('Nenhuma imagem selecionada.');

@@ -20,4 +20,8 @@ public class BreedsService {
     public List<Breeds> findAnimalsBreedsById(Short id) {
         return repository.findAnimalsBreedsById(id);
     }
+
+    public Integer getIdByBreedName(String breedName, int animalTypeId) {
+        return repository.findIdByBreedName(breedName, (short) animalTypeId);
+    }
 }

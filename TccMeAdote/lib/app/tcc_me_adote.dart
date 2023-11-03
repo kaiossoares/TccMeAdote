@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tcc_me_adote/app/pages/animal/pet_list_page.dart';
+import 'package:tcc_me_adote/app/pages/animal/profile_page.dart';
 import 'package:tcc_me_adote/app/pages/login/register_page.dart';
 import 'package:tcc_me_adote/app/pages/splash/splash_page.dart';
 import 'package:tcc_me_adote/app/pages/login/login_page.dart';
@@ -24,6 +25,7 @@ class TccMeAdote extends StatelessWidget {
         '/post': (context) => PostPage(),
         '/favorites': (context) => FavoritesPage(),
         '/chat': (context) => ChatPage(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }

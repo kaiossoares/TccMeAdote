@@ -9,9 +9,13 @@ class FirebaseStorageService {
 
     try {
       for (int i = 0; i < imageFiles.length; i++) {
-        Reference storageReference = _storage.ref().child('$storagePath/image_$i.jpg');
+        String uniqueFileName = generateUniqueFileName(imageFiles[i]);
+
+        Reference storageReference = _storage.ref().child('$storagePath/$uniqueFileName');
+
         UploadTask uploadTask = storageReference.putFile(imageFiles[i]);
         await uploadTask;
+
         String imageUrl = await storageReference.getDownloadURL();
         imageUrls.add(imageUrl);
       }
@@ -21,5 +25,11 @@ class FirebaseStorageService {
       print('Erro ao fazer upload das imagens: $e');
       throw 'Erro ao fazer upload das imagens.';
     }
+  }
+
+  String generateUniqueFileName(File file) {
+    String fileName = file.path.split('/').last;
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    return '$timestamp-$fileName';
   }
 }

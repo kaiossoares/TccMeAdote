@@ -13,7 +13,6 @@ class BreedsRepository {
 
   BreedsRepository({required this.client});
 
-  @override
   Future<List<BreedsModel>> getBreeds(int categoryId) async {
     final response = await client.get(url: 'http://192.168.15.64:8080/breeds/$categoryId');
 
@@ -25,4 +24,21 @@ class BreedsRepository {
       throw Exception('Falha ao carregar as raças da API');
     }
   }
+
+  Future<int> getBreedId(String breedName, int animalTypeId) async {
+    final response = await client.get(url: Uri.encodeFull('http://192.168.15.64:8080/breeds/$breedName/$animalTypeId'));
+    try {
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+        int breedId = data['id'];
+        print(breedId);
+        return breedId;
+      } else {
+        throw Exception('Falha ao obter breedId da API. Código de status: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Erro: $error');
+    }
+  }
+
 }

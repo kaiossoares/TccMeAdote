@@ -13,6 +13,7 @@ class AuthException implements Exception {
 
 class AuthService extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  String? userFirebaseUid;
   User? usuario;
   bool isLoading = true;
 
@@ -22,7 +23,13 @@ class AuthService extends ChangeNotifier {
 
   _authCheck() {
     _auth.authStateChanges().listen((User? user) {
-      usuario = (user == null) ? null : user;
+      usuario = user;
+      if (user != null) {
+        userFirebaseUid = user.uid;
+        _getUserUid();
+      } else {
+        userFirebaseUid = null;
+      }
       isLoading = false;
       notifyListeners();
     });
@@ -31,6 +38,16 @@ class AuthService extends ChangeNotifier {
   _getUser() {
     usuario = _auth.currentUser;
     notifyListeners();
+  }
+
+  Future<void> _getUserUid() async {
+    userFirebaseUid = usuario?.uid;
+    notifyListeners();
+  }
+
+  Future<String?> getUserFirebaseUid() async {
+    await _getUserUid();
+    return userFirebaseUid;
   }
 
   bool isEmailValid(String email) {

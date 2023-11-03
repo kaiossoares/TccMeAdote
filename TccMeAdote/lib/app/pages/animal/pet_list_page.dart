@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_me_adote/app/pages/animal/profile_page.dart';
 import '../../ui/widgets/adote_bottomnavigationbar.dart';
 import 'package:tcc_me_adote/app/pages/animal/post_page.dart';
 import 'package:tcc_me_adote/app/pages/animal/favorites_page.dart';
@@ -17,9 +18,10 @@ class _PetListPageState extends State<PetListPage> {
 
   final List<Widget> _pages = [
     _buildPetListPageContent(),
-    PostPage(),
     FavoritesPage(),
+    PostPage(),
     ChatPage(),
+    ProfilePage()
   ];
 
   static Widget _buildPetListPageContent() {
@@ -33,7 +35,6 @@ class _PetListPageState extends State<PetListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: constraints.maxHeight * 0.02),
-                _buildProfile(context),
                 Text('Categoria Pets',
                     style: context.textStyles.textTitleMedium),
                 SizedBox(height: 16),
@@ -45,7 +46,7 @@ class _PetListPageState extends State<PetListPage> {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              20.0), // Valor de borderRadius define a curvatura das bordas
+                              20.0),
                         ),
                       ),
                     ),
@@ -56,7 +57,7 @@ class _PetListPageState extends State<PetListPage> {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              20.0), // Valor de borderRadius define a curvatura das bordas
+                              20.0),
                         ),
                       ),
                     ),
@@ -68,27 +69,6 @@ class _PetListPageState extends State<PetListPage> {
           ),
         );
       },
-    );
-  }
-
-  static Widget _buildProfile(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-            child: Image.asset(
-              'assets/images/perfil.png',
-              width: MediaQuery.of(context).size.width * 0.1,
-              height: MediaQuery.of(context).size.width * 0.1,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -124,16 +104,20 @@ class _PetListPageState extends State<PetListPage> {
               label: 'Procurar',
             ),
             AdoteBottomNavigationBarItem(
-              iconData: Icons.add_circle_outline,
-              label: 'Post',
-            ),
-            AdoteBottomNavigationBarItem(
               iconData: Icons.favorite,
               label: 'Favoritos',
             ),
             AdoteBottomNavigationBarItem(
+              iconData: Icons.add_circle_outline,
+              label: 'Post',
+            ),
+            AdoteBottomNavigationBarItem(
               iconData: Icons.chat_outlined,
               label: 'Chat',
+            ),
+            AdoteBottomNavigationBarItem(
+              iconData: Icons.account_circle_rounded,
+              label: 'Perfil',
             ),
           ],
         ),
