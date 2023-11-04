@@ -1,5 +1,6 @@
 package com.tccmeadote.meadote.services;
 
+import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.entities.AnimalPost;
 import com.tccmeadote.meadote.entities.PostPhotos;
 import com.tccmeadote.meadote.repositories.AnimalPostRepository;
@@ -7,6 +8,7 @@ import com.tccmeadote.meadote.repositories.PostPhotosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +37,40 @@ public class AnimalPostService {
         }
 
         return savedAnimalPost;
+    }
+
+    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrl() {
+        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrl();
+        List<AnimalPostResponseDTO> dtos = new ArrayList<>();
+
+        for (Object[] row : queryResult) {
+            AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
+            dto.setAnimalName((String) row[0]);
+            dto.setAnimalType((String) row[1]);
+            dto.setBreedName((String) row[2]);
+            dto.setSex((String) row[3]);
+            dto.setAge((String) row[4]);
+            dto.setFirstImageUrl((String) row[5]);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrlByAnimalType(Long animalTypeId) {
+        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId);
+        List<AnimalPostResponseDTO> dtos = new ArrayList<>();
+
+        for (Object[] row : queryResult) {
+            AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
+            dto.setAnimalName((String) row[0]);
+            dto.setAnimalType((String) row[1]);
+            dto.setBreedName((String) row[2]);
+            dto.setSex((String) row[3]);
+            dto.setAge((String) row[4]);
+            dto.setFirstImageUrl((String) row[5]);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
 }

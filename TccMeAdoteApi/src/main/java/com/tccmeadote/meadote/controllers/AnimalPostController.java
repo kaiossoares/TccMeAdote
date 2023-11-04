@@ -1,5 +1,6 @@
 package com.tccmeadote.meadote.controllers;
 
+import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.entities.AnimalPost;
 import com.tccmeadote.meadote.services.AnimalPostRequest;
 import com.tccmeadote.meadote.services.AnimalPostService;
@@ -25,5 +26,17 @@ public class AnimalPostController {
     public ResponseEntity<String> createAnimalPost(@RequestBody AnimalPostRequest animalPostRequest) {
         animalPostService.createAnimalPost(animalPostRequest.getAnimalPost(), animalPostRequest.getPhotoUrls());
         return ResponseEntity.status(HttpStatus.CREATED).body("Post de animal criado com sucesso.");
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPosts() {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrl();
+        return ResponseEntity.ok(animalPosts);
+    }
+
+    @GetMapping("/list/{animalTypeId}")
+    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPostsByAnimalType(@PathVariable Long animalTypeId) {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId);
+        return ResponseEntity.ok(animalPosts);
     }
 }
