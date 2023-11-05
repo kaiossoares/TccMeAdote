@@ -44,4 +44,17 @@ class AnimalPostRepository implements IAnimalPostRepository {
       throw Exception('Falha ao criar post de animal na API');
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchAnimalPosts() async {
+    final response = await client.get(url: 'http://192.168.15.64:8080/api/posts/list');
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+      final List<Map<String, dynamic>> animalPosts = data.cast<Map<String, dynamic>>();
+      return animalPosts;
+    } else {
+      throw Exception('Falha ao carregar os dados da API');
+    }
+  }
+
 }

@@ -1,7 +1,6 @@
 package com.tccmeadote.meadote.controllers;
 
 import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
-import com.tccmeadote.meadote.entities.AnimalPost;
 import com.tccmeadote.meadote.services.AnimalPostRequest;
 import com.tccmeadote.meadote.services.AnimalPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +36,12 @@ public class AnimalPostController {
     @GetMapping("/list/{animalTypeId}")
     public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPostsByAnimalType(@PathVariable Long animalTypeId) {
         List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId);
+        return ResponseEntity.ok(animalPosts);
+    }
+
+    @GetMapping("/list/uid/{firebaseUserUid}")
+    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPostsByFirebaseUserUid(@PathVariable String firebaseUserUid) {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsByFirebaseUserUid(firebaseUserUid);
         return ResponseEntity.ok(animalPosts);
     }
 }
