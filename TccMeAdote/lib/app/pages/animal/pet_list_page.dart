@@ -22,7 +22,6 @@ class _PetListPageState extends State<PetListPage> {
     _animalPostRepository = AnimalPostRepository(client: _httpClient);
     _animalPosts = [];
     _loadAnimalPosts();
-    _animalPostRepository.fetchAnimalPosts();
   }
 
   @override
@@ -31,9 +30,11 @@ class _PetListPageState extends State<PetListPage> {
     _loadAnimalPosts();
   }
 
+  int? _selectedCategory;
+
   Future<void> _loadAnimalPosts() async {
     try {
-      final posts = await _animalPostRepository.fetchAnimalPosts();
+      final posts = await _animalPostRepository.fetchAnimalPosts(_selectedCategory ?? 0);
       setState(() {
         _animalPosts = posts;
       });
@@ -44,16 +45,15 @@ class _PetListPageState extends State<PetListPage> {
     }
   }
 
-  String _selectedCategory = '';
-
-  void _onCategoryButtonPressed(String category) {
+  void _onCategoryButtonPressed(int animalType) {
     setState(() {
-      if (_selectedCategory == category) {
-        _selectedCategory = '';
+      if (_selectedCategory == animalType) {
+        _selectedCategory = null;
       } else {
-        _selectedCategory = category;
+        _selectedCategory = animalType;
       }
     });
+    _loadAnimalPosts(); 
   }
 
   @override
@@ -73,11 +73,13 @@ class _PetListPageState extends State<PetListPage> {
                     _buildCategoryButton(
                       'Cachorros',
                       'assets/images/dog-face.svg',
+                      1
                     ),
                     SizedBox(width: 16),
                     _buildCategoryButton(
                       'Gatos',
                       'assets/images/cat-face.svg',
+                      2
                     ),
                   ],
                 ),
@@ -93,11 +95,11 @@ class _PetListPageState extends State<PetListPage> {
     );
   }
 
-  Widget _buildCategoryButton(String category, String iconPath) {
-    bool isSelected = _selectedCategory == category;
+  Widget _buildCategoryButton(String category, String iconPath, int animalType) {
+    bool isSelected = _selectedCategory == animalType;
 
     return ElevatedButton.icon(
-      onPressed: () => _onCategoryButtonPressed(category),
+      onPressed: () => _onCategoryButtonPressed(animalType),
       icon: SvgPicture.asset(
         iconPath,
         height: 24,
@@ -118,7 +120,7 @@ class _PetListPageState extends State<PetListPage> {
 
   Widget _buildBody() {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: _animalPostRepository.fetchAnimalPosts(),
+      future: _animalPostRepository.fetchAnimalPosts(_selectedCategory ?? 0),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
