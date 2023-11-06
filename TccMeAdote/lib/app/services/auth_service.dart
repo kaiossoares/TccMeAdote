@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../data/http/http_client.dart';
 import '../data/models/user_model.dart';
 import '../data/repositories/user_repository.dart';
@@ -72,7 +71,7 @@ class AuthService extends ChangeNotifier {
       var userRepository = UserRepository(client: _httpClient);
       await userRepository.registerUser(user);
 
-      Navigator.pushReplacementNamed(context, '/pets');
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw AuthException('A senha é muito fraca!');
@@ -91,7 +90,7 @@ class AuthService extends ChangeNotifier {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
       _getUser();
-      Navigator.pushReplacementNamed(context, '/pets');
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw AuthException('Dados não encontrados, cadastre-se.');
