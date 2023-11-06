@@ -1,12 +1,21 @@
 package com.tccmeadote.meadote.dto;
 
 public class AnimalPostResponseDTO {
+    private int id;
     private String animalName;
     private String animalType;
     private String breedName;
     private String sex;
     private String age;
     private String firstImageUrl;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getAnimalName() {
         return animalName;

@@ -45,12 +45,13 @@ public class AnimalPostService {
 
         for (Object[] row : queryResult) {
             AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
-            dto.setAnimalName((String) row[0]);
-            dto.setAnimalType((String) row[1]);
-            dto.setBreedName((String) row[2]);
-            dto.setSex((String) row[3]);
-            dto.setAge((String) row[4]);
-            dto.setFirstImageUrl((String) row[5]);
+            dto.setId((int) row[0]);
+            dto.setAnimalName((String) row[1]);
+            dto.setAnimalType((String) row[2]);
+            dto.setBreedName((String) row[3]);
+            dto.setSex((String) row[4]);
+            dto.setAge((String) row[5]);
+            dto.setFirstImageUrl((String) row[6]);
             dtos.add(dto);
         }
         return dtos;
@@ -62,12 +63,13 @@ public class AnimalPostService {
 
         for (Object[] row : queryResult) {
             AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
-            dto.setAnimalName((String) row[0]);
-            dto.setAnimalType((String) row[1]);
-            dto.setBreedName((String) row[2]);
-            dto.setSex((String) row[3]);
-            dto.setAge((String) row[4]);
-            dto.setFirstImageUrl((String) row[5]);
+            dto.setId((int) row[0]);
+            dto.setAnimalName((String) row[1]);
+            dto.setAnimalType((String) row[2]);
+            dto.setBreedName((String) row[3]);
+            dto.setSex((String) row[4]);
+            dto.setAge((String) row[5]);
+            dto.setFirstImageUrl((String) row[6]);
             dtos.add(dto);
         }
         return dtos;
@@ -79,12 +81,13 @@ public class AnimalPostService {
 
         for (Object[] row : queryResult) {
             AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
-            dto.setAnimalName((String) row[0]);
-            dto.setAnimalType((String) row[1]);
-            dto.setBreedName((String) row[2]);
-            dto.setSex((String) row[3]);
-            dto.setAge((String) row[4]);
-            dto.setFirstImageUrl((String) row[5]);
+            dto.setId((int) row[0]);
+            dto.setAnimalName((String) row[1]);
+            dto.setAnimalType((String) row[2]);
+            dto.setBreedName((String) row[3]);
+            dto.setSex((String) row[4]);
+            dto.setAge((String) row[5]);
+            dto.setFirstImageUrl((String) row[6]);
             dtos.add(dto);
         }
         return dtos;

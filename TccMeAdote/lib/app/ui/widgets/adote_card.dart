@@ -38,29 +38,37 @@ class AdoteCard extends StatelessWidget {
                       child: Container(
                         width: 180,
                         height: 180,
-                        child: (firstImageUrl != null && firstImageUrl!.isNotEmpty)
-                            ? Image.network(
-                          firstImageUrl!,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
-                                      : null,
-                                ),
-                              );
-                            }
-                          },
-                        )
-                            : Image.asset(
-                          'assets/images/default.jpg',
-                          fit: BoxFit.cover,
-                        ),
+                        child:
+                            (firstImageUrl != null && firstImageUrl!.isNotEmpty)
+                                ? Image.network(
+                                    firstImageUrl!,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    (loadingProgress
+                                                            .expectedTotalBytes ??
+                                                        1)
+                                                : null,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  )
+                                : Image.asset(
+                                    'assets/images/default.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
                       ),
                     ),
                     SizedBox(width: 16),

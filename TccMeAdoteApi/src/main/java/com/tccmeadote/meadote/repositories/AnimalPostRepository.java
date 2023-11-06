@@ -17,7 +17,7 @@ public interface AnimalPostRepository extends JpaRepository<AnimalPost, Long> {
     @Query(value = "INSERT INTO post_photos (post_id, photo_url) VALUES (:postId, :url)", nativeQuery = true)
     void savePostPhotos(@Param("postId") Long postId, @Param("url") String url);
 
-    @Query(value = "SELECT ap.animal_name, " +
+    @Query(value = "SELECT ap.id, ap.animal_name, " +
             "at.animal_type AS animal_type, " +
             "b.breed_name AS breed_name, " +
             "ap.sex, " +
@@ -29,7 +29,7 @@ public interface AnimalPostRepository extends JpaRepository<AnimalPost, Long> {
             "ORDER BY ap.id", nativeQuery = true)
     List<Object[]> getAnimalPostsWithFirstImageUrl();
 
-    @Query(value = "SELECT ap.animal_name, " +
+    @Query(value = "SELECT ap.id, ap.animal_name, " +
             "at.animal_type AS animal_type, " +
             "b.breed_name AS breed_name, " +
             "ap.sex, " +
@@ -42,7 +42,7 @@ public interface AnimalPostRepository extends JpaRepository<AnimalPost, Long> {
             "ORDER BY ap.id", nativeQuery = true)
     List<Object[]> getAnimalPostsWithFirstImageUrlByAnimalType(@Param("animalTypeId") Long animalTypeId);
 
-    @Query(value = "SELECT ap.animal_name, " +
+    @Query(value = "SELECT ap.id, ap.animal_name, " +
             "at.animal_type AS animal_type, " +
             "b.breed_name AS breed_name, " +
             "ap.sex, " +

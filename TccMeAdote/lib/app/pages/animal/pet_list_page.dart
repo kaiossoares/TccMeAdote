@@ -53,7 +53,7 @@ class _PetListPageState extends State<PetListPage> {
         _selectedCategory = animalType;
       }
     });
-    _loadAnimalPosts(); 
+    _loadAnimalPosts();
   }
 
   @override
