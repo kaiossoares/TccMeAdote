@@ -44,4 +44,10 @@ public class AnimalPostController {
         List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsByFirebaseUserUid(firebaseUserUid);
         return ResponseEntity.ok(animalPosts);
     }
+
+    @GetMapping("/favorites-animal-posts/{firebaseUserUid}")
+    public ResponseEntity<List<AnimalPostResponseDTO>> findFavoritesAnimalPostsByUserUid(@PathVariable String firebaseUserUid) {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.findFavoritesAnimalPostsByUserUid(firebaseUserUid);
+        return ResponseEntity.ok(animalPosts);
+    }
 }

@@ -93,4 +93,21 @@ public class AnimalPostService {
         return dtos;
     }
 
+    public List<AnimalPostResponseDTO> findFavoritesAnimalPostsByUserUid(String firebaseUserUid) {
+        List<Object[]> queryResult = animalPostRepository.findFavoritesAnimalPostsByUserUid(firebaseUserUid);
+        List<AnimalPostResponseDTO> dtos = new ArrayList<>();
+
+        for (Object[] row : queryResult) {
+            AnimalPostResponseDTO dto = new AnimalPostResponseDTO();
+            dto.setId((int) row[0]);
+            dto.setAnimalName((String) row[1]);
+            dto.setAnimalType((String) row[2]);
+            dto.setBreedName((String) row[3]);
+            dto.setSex((String) row[4]);
+            dto.setAge((String) row[5]);
+            dto.setFirstImageUrl((String) row[6]);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
 }
