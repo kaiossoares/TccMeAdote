@@ -27,7 +27,7 @@ class UserRepository implements IUserRepository {
     };
 
     final response = await client.post(
-      url: 'http://192.168.15.64:8080/api/users/register',
+      url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/users/register',
       headers: headers,
       body: requestBody,
     );

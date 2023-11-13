@@ -14,7 +14,7 @@ class BreedsRepository {
   BreedsRepository({required this.client});
 
   Future<List<BreedsModel>> getBreeds(int categoryId) async {
-    final response = await client.get(url: 'http://192.168.15.64:8080/breeds/$categoryId');
+    final response = await client.get(url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/breeds/$categoryId');
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
@@ -26,7 +26,7 @@ class BreedsRepository {
   }
 
   Future<int> getBreedId(String breedName, int animalTypeId) async {
-    final response = await client.get(url: Uri.encodeFull('http://192.168.15.64:8080/breeds/$breedName/$animalTypeId'));
+    final response = await client.get(url: Uri.encodeFull('https://tcc-meadote-api-062678c8588e.herokuapp.com/breeds/$breedName/$animalTypeId'));
     try {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));

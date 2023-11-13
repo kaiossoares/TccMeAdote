@@ -9,7 +9,7 @@ class FavoriteRepository {
   Future<void> addFavorite(int postId) async {
     String? userFirebaseUid = await AuthService().getUserFirebaseUid();
 
-    const url = 'http://192.168.15.64:8080/api/favorites/add';
+    const url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/favorites/add';
     final headers = {'Content-Type': 'application/json'};
 
     final body = {'userFirebaseUid': userFirebaseUid, 'postId': postId};
@@ -31,7 +31,7 @@ class FavoriteRepository {
     print(postId);
     print(userFirebaseUid);
 
-    const url = 'http://192.168.15.64:8080/api/favorites/remove';
+    const url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/favorites/remove';
     final headers = {'Content-Type': 'application/json'};
 
     final body = {'userFirebaseUid': userFirebaseUid, 'postId': postId};

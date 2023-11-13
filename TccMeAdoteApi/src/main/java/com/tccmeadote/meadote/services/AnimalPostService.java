@@ -55,7 +55,8 @@ public class AnimalPostService {
             dto.setSex((String) row[4]);
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
-            dto.setFavorite((Integer) row[7] == 1);
+            Object value = row[7];
+            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
             dtos.add(dto);
         }
         return dtos;
@@ -112,7 +113,8 @@ public class AnimalPostService {
             dto.setSex((String) row[4]);
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
-            dto.setFavorite((Integer) row[7] == 1);
+            Object value = row[7];
+            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
             dtos.add(dto);
         }
         return dtos;

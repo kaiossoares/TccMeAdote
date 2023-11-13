@@ -35,7 +35,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
     };
 
     final response = await client.post(
-      url: 'http://192.168.15.64:8080/api/posts/post',
+      url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/post',
       headers: headers,
       body: requestBody,
     );
@@ -56,12 +56,12 @@ class AnimalPostRepository implements IAnimalPostRepository {
     try {
       if (animalType == 1) {
         url =
-            'http://192.168.15.64:8080/api/posts/list/animal-type/1/$userFirebaseUid';
+            'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/list/animal-type/1/$userFirebaseUid';
       } else if (animalType == 2) {
         url =
-            'http://192.168.15.64:8080/api/posts/list/animal-type/2/$userFirebaseUid';
+            'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/list/animal-type/2/$userFirebaseUid';
       } else {
-        url = 'http://192.168.15.64:8080/api/posts/list/$userFirebaseUid';
+        url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/list/$userFirebaseUid';
       }
 
       final response = await client.get(url: url);
@@ -89,7 +89,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
 
     try {
       url =
-          'http://192.168.15.64:8080/api/posts/favorites-animal-posts/$userFirebaseUid';
+          'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/favorites-animal-posts/$userFirebaseUid';
 
       final response = await client.get(url: url);
 

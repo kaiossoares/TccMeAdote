@@ -16,7 +16,7 @@ class AnimalTypeRepository implements IAnimalTypeRepository {
   @override
   Future<List<AnimalTypeModel>> getAnimalTypes() async {
     final response =
-        await client.get(url: 'http://192.168.15.64:8080/animal-types');
+        await client.get(url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/animal-types');
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body)['animalTypes'];
