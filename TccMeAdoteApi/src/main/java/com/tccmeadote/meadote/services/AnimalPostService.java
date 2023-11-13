@@ -80,7 +80,12 @@ public class AnimalPostService {
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
             Object value = row[7];
-            dto.setFavorite((Long) value == 1);
+            if (value instanceof Number) {
+                dto.setFavorite(((Number) value).intValue() == 1);
+            } else {
+                dto.setFavorite(false);
+            }
+
             dtos.add(dto);
         }
         return dtos;
