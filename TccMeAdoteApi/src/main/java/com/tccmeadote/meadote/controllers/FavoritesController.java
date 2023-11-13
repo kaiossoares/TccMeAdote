@@ -21,7 +21,7 @@ public class FavoritesController {
     @PostMapping("/add")
     public ResponseEntity<String> addFavorite(@RequestBody Map<String, String> requestBody) {
         String userFirebaseUid = requestBody.get("userFirebaseUid");
-        Integer postId = Integer.parseInt(requestBody.get("postId"));
+        Long postId = Long.parseLong    (requestBody.get("postId"));
         favoritesService.addFavorite(userFirebaseUid, postId);
         return ResponseEntity.ok("Favorito adicionado com sucesso.");
     }
@@ -29,10 +29,20 @@ public class FavoritesController {
     @DeleteMapping("/remove")
     public ResponseEntity<String> removeFavorite(@RequestBody Map<String, Object> requestBody) {
         String userFirebaseUid = (String) requestBody.get("userFirebaseUid");
-        Integer postId = (Integer) requestBody.get("postId");
+        Object postIdObject = requestBody.get("postId");
+
+        Long postId;
+        if (postIdObject instanceof Long) {
+            postId = (Long) postIdObject;
+        } else if (postIdObject instanceof Integer) {
+            postId = ((Integer) postIdObject).longValue();
+        } else {
+            return ResponseEntity.badRequest().body("Formato inválido para o postId.");
+        }
 
         favoritesService.removeFavorite(userFirebaseUid, postId);
 
         return ResponseEntity.ok("Favorito removido com sucesso.");
     }
 }
+

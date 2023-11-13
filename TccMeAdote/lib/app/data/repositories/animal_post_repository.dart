@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../services/auth_service.dart';
 import '../http/http_client.dart';
 import '../models/animal_post_model.dart';
 
@@ -14,8 +15,8 @@ class AnimalPostRepository implements IAnimalPostRepository {
   AnimalPostRepository({required this.client});
 
   @override
-  Future<AnimalPostModel> createAnimalPost(AnimalPostModel animalPost,
-      List<String> photoUrls) async {
+  Future<AnimalPostModel> createAnimalPost(
+      AnimalPostModel animalPost, List<String> photoUrls) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
     };
@@ -41,7 +42,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
 
     if (response.statusCode == 201) {
       final Map<String, dynamic> data =
-      jsonDecode(utf8.decode(response.bodyBytes));
+          jsonDecode(utf8.decode(response.bodyBytes));
       return AnimalPostModel.fromMap(data);
     } else {
       throw Exception('Falha ao criar post de animal na API');
@@ -50,23 +51,62 @@ class AnimalPostRepository implements IAnimalPostRepository {
 
   Future<List<Map<String, dynamic>>> fetchAnimalPosts(int animalType) async {
     String url;
-    if (animalType == 1) {
-      url = 'http://192.168.15.64:8080/api/posts/list/1'; // Cachorros
-    } else if (animalType == 2) {
-      url = 'http://192.168.15.64:8080/api/posts/list/2'; // Gatos
-    } else {
-      url = 'http://192.168.15.64:8080/api/posts/list'; // Todos os animais
+    String? userFirebaseUid = await AuthService().getUserFirebaseUid();
+
+    try {
+      if (animalType == 1) {
+        url =
+            'http://192.168.15.64:8080/api/posts/list/animal-type/1/$userFirebaseUid';
+      } else if (animalType == 2) {
+        url =
+            'http://192.168.15.64:8080/api/posts/list/animal-type/2/$userFirebaseUid';
+      } else {
+        url = 'http://192.168.15.64:8080/api/posts/list/$userFirebaseUid';
+      }
+
+      final response = await client.get(url: url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+        final List<Map<String, dynamic>> animalPosts =
+            data.cast<Map<String, dynamic>>();
+        return animalPosts;
+      } else {
+        print(
+            'Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        throw Exception(
+            'Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erro ao carregar os dados da API: $e');
+      rethrow;
     }
+  }
 
-    final response = await client.get(url: url);
+  Future<List<Map<String, dynamic>>> fetchFavoritesAnimalPosts() async {
+    String url;
+    String? userFirebaseUid = await AuthService().getUserFirebaseUid();
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
-      final List<Map<String, dynamic>> animalPosts = data.cast<
-          Map<String, dynamic>>();
-      return animalPosts;
-    } else {
-      throw Exception('Falha ao carregar os dados da API');
+    try {
+      url =
+          'http://192.168.15.64:8080/api/posts/favorites-animal-posts/$userFirebaseUid';
+
+      final response = await client.get(url: url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+        final List<Map<String, dynamic>> animalPosts =
+            data.cast<Map<String, dynamic>>();
+        return animalPosts;
+      } else {
+        print(
+            'Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        throw Exception(
+            'Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erro ao carregar os dados da API: $e');
+      rethrow;
     }
   }
 }

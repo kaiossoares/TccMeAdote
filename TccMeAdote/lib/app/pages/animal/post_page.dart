@@ -34,7 +34,15 @@ class _PostPageState extends State<PostPage> {
   final FirebaseStorageService _firebaseStorageService = FirebaseStorageService();
   List<XFile> _selectedImages = [];
 
-  final List<String> _ages = List.generate(26, (index) => '${index + 1} ano');
+  final List<String> _ages = List.generate(27, (index) {
+    if (index == 0) {
+      return 'Recém-nascido';
+    } else {
+      final plural = index > 1 ? 's' : '';
+      return '${index} ano$plural';
+    }
+  });
+
   List<String> _categories = [];
   List<BreedsModel> _breeds = [];
 

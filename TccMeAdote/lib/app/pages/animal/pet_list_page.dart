@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../data/http/http_client.dart';
 import '../../data/repositories/animal_post_repository.dart';
+import '../../data/repositories/favorites_repository.dart';
 import '../../ui/widgets/adote_card.dart';
 
 class PetListPage extends StatefulWidget {
@@ -14,6 +15,7 @@ class _PetListPageState extends State<PetListPage> {
   late final AnimalPostRepository _animalPostRepository;
   late List<Map<String, dynamic>> _animalPosts;
   late IHttpClient _httpClient;
+  int? _selectedCategory;
 
   @override
   void initState() {
@@ -30,8 +32,6 @@ class _PetListPageState extends State<PetListPage> {
     _loadAnimalPosts();
   }
 
-  int? _selectedCategory;
-
   Future<void> _loadAnimalPosts() async {
     try {
       final posts = await _animalPostRepository.fetchAnimalPosts(_selectedCategory ?? 0);
@@ -47,11 +47,7 @@ class _PetListPageState extends State<PetListPage> {
 
   void _onCategoryButtonPressed(int animalType) {
     setState(() {
-      if (_selectedCategory == animalType) {
-        _selectedCategory = null;
-      } else {
-        _selectedCategory = animalType;
-      }
+      _selectedCategory = _selectedCategory == animalType ? null : animalType;
     });
     _loadAnimalPosts();
   }
@@ -71,15 +67,15 @@ class _PetListPageState extends State<PetListPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     _buildCategoryButton(
-                      'Cachorros',
-                      'assets/images/dog-face.svg',
-                      1
+                        'Cachorros',
+                        'assets/images/dog-face.svg',
+                        1
                     ),
                     SizedBox(width: 16),
                     _buildCategoryButton(
-                      'Gatos',
-                      'assets/images/cat-face.svg',
-                      2
+                        'Gatos',
+                        'assets/images/cat-face.svg',
+                        2
                     ),
                   ],
                 ),
@@ -135,13 +131,20 @@ class _PetListPageState extends State<PetListPage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: AdoteCard(
+                  postId: post['id'],
                   animalName: post['animalName'],
                   animalType: post['animalType'],
                   breedName: post['breedName'] ?? 'Não especificada',
                   sex: post['sex'],
                   age: post['age'],
-                  firstImageUrl:
-                  post['firstImageUrl'],
+                  firstImageUrl: post['firstImageUrl'],
+                  favorite: post['favorite'] ?? false,
+                  favoriteRepository: FavoriteRepository(client: HttpClient()),
+                  onFavoritePressed: () {
+                    setState(() {
+                      post['favorite'] = !(post['favorite'] ?? false);
+                    });
+                  },
                 ),
               );
             }).toList(),

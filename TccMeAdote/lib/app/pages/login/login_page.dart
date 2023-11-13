@@ -6,7 +6,7 @@ import 'package:tcc_me_adote/app/services/auth_service.dart';
 import '../../ui/styles/text_styles.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -18,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
 
   login() async {
+    print(emailController.text);
+    print(senhaController.text);
     setState(() => loading = true);
     try {
       await context
@@ -57,10 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 30,
                     ),
-                    TextFormField(
-                      controller: senhaController,
-                      decoration: const InputDecoration(labelText: 'Senha'),
-                    ),
+                    PasswordFormField(context: context, controller: senhaController), // Correção aqui
                     const SizedBox(
                       height: 50,
                     ),
@@ -68,12 +67,12 @@ class _LoginPageState extends State<LoginPage> {
                       child: loading
                           ? CircularProgressIndicator()
                           : AdoteButton(
-                              width: double.infinity,
-                              label: 'Entrar',
-                              onPressed: () {
-                                login();
-                              },
-                            ),
+                        width: double.infinity,
+                        label: 'Entrar',
+                        onPressed: () {
+                          login();
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -94,10 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                       style: context.textStyles.textBold,
                     ),
                     TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/register');
-                        },
-                        child: Text('Cadastre-se'))
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/register');
+                      },
+                      child: Text('Cadastre-se'),
+                    ),
                   ],
                 ),
               ),
@@ -108,3 +108,39 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+class PasswordFormField extends StatefulWidget {
+  final BuildContext context;
+  final TextEditingController controller;
+
+  const PasswordFormField({Key? key, required this.context, required this.controller})
+      : super(key: key);
+
+  @override
+  _PasswordFormFieldState createState() => _PasswordFormFieldState();
+}
+
+class _PasswordFormFieldState extends State<PasswordFormField> {
+  bool _isObscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: widget.controller,
+      obscureText: _isObscure,
+      decoration: InputDecoration(
+        labelText: 'Senha',
+        suffixIcon: IconButton(
+          icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              _isObscure = !_isObscure;
+            });
+          },
+        ),
+      ),
+    );
+  }
+}
+
+

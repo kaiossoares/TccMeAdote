@@ -27,15 +27,15 @@ public class AnimalPostController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Post de animal criado com sucesso.");
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPosts() {
-        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrl();
+    @GetMapping("/list/{firebaseUserUid}")
+    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPosts(@PathVariable String firebaseUserUid) {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrlAndFavoriteStatus(firebaseUserUid);
         return ResponseEntity.ok(animalPosts);
     }
 
-    @GetMapping("/list/{animalTypeId}")
-    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPostsByAnimalType(@PathVariable Long animalTypeId) {
-        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId);
+    @GetMapping("/list/animal-type/{animalTypeId}/{firebaseUserUid}")
+    public ResponseEntity<List<AnimalPostResponseDTO>> getAnimalPostsByAnimalType(@PathVariable Long animalTypeId, @PathVariable String firebaseUserUid) {
+        List<AnimalPostResponseDTO> animalPosts = animalPostService.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId, firebaseUserUid);
         return ResponseEntity.ok(animalPosts);
     }
 

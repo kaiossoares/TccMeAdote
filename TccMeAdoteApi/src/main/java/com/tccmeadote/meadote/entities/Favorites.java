@@ -9,7 +9,7 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "post_id")
-    private Integer postId;
+    private Long postId;
     @Column(name = "user_firebase_uid")
     private String userFirebaseUid;
 
@@ -25,11 +25,11 @@ public class Favorites {
         this.id = id;
     }
 
-    public Integer getPostId() {
+    public Long getPostId() {
         return postId;
     }
 
-    public void setPostId(Integer postId) {
+    public void setPostId(Long postId) {
         this.postId = postId;
     }
 

@@ -71,5 +71,4 @@ class _AdoteBottomNavigationBarState extends State<AdoteBottomNavigationBar> {
       ),
     );
   }
-
 }

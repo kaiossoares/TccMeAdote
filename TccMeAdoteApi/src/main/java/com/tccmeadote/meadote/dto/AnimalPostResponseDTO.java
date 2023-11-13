@@ -8,6 +8,21 @@ public class AnimalPostResponseDTO {
     private String sex;
     private String age;
     private String firstImageUrl;
+    private boolean favorite;
+
+    public AnimalPostResponseDTO() {
+    }
+
+    public AnimalPostResponseDTO(int id, String animalName, String animalType, String breedName, String sex, String age, String firstImageUrl, boolean favorite) {
+        this.id = id;
+        this.animalName = animalName;
+        this.animalType = animalType;
+        this.breedName = breedName;
+        this.sex = sex;
+        this.age = age;
+        this.firstImageUrl = firstImageUrl;
+        this.favorite = favorite;
+    }
 
     public int getId() {
         return id;
@@ -63,5 +78,13 @@ public class AnimalPostResponseDTO {
 
     public void setFirstImageUrl(String firstImageUrl) {
         this.firstImageUrl = firstImageUrl;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

@@ -13,7 +13,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController nameController  = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   bool loading = false;
@@ -21,9 +21,8 @@ class _RegisterPageState extends State<RegisterPage> {
   registrar() async {
     setState(() => loading = true);
     try {
-      await context
-          .read<AuthService>()
-          .registrar(nameController.text, emailController.text, senhaController.text, context);
+      await context.read<AuthService>().registrar(nameController.text,
+          emailController.text, senhaController.text, context);
     } on AuthException catch (e) {
       setState(() => loading = false);
       ScaffoldMessenger.of(context)

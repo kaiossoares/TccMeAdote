@@ -16,7 +16,7 @@ public class FavoritesService {
         this.favoritesRepository = favoritesRepository;
     }
 
-    public void addFavorite(String userFirebaseUid, Integer postId) {
+    public void addFavorite(String userFirebaseUid, Long postId) {
         Optional<Favorites> favoritoExistente = favoritesRepository.findByUserFirebaseUidAndPostId(userFirebaseUid, postId);
         if (favoritoExistente.isEmpty()) {
             Favorites favorites = new Favorites();
@@ -26,7 +26,7 @@ public class FavoritesService {
         }
     }
 
-    public void removeFavorite(String userFirebaseUid, Integer postId) {
+    public void removeFavorite(String userFirebaseUid, Long postId) {
         Optional<Favorites> favoritoExistente = favoritesRepository.findByUserFirebaseUidAndPostId(userFirebaseUid, postId);
         favoritoExistente.ifPresent(favoritesRepository::delete);
     }

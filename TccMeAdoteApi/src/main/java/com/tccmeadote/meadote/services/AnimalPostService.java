@@ -4,6 +4,7 @@ import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.entities.AnimalPost;
 import com.tccmeadote.meadote.entities.PostPhotos;
 import com.tccmeadote.meadote.repositories.AnimalPostRepository;
+import com.tccmeadote.meadote.repositories.FavoritesRepository;
 import com.tccmeadote.meadote.repositories.PostPhotosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,13 @@ public class AnimalPostService {
 
     private final AnimalPostRepository animalPostRepository;
     private final PostPhotosRepository postPhotosRepository;
+    private final FavoritesRepository favoritesRepository;
 
     @Autowired
-    public AnimalPostService(AnimalPostRepository animalPostRepository, PostPhotosRepository postPhotosRepository) {
+    public AnimalPostService(AnimalPostRepository animalPostRepository, PostPhotosRepository postPhotosRepository, FavoritesRepository favoritesRepository) {
         this.animalPostRepository = animalPostRepository;
         this.postPhotosRepository = postPhotosRepository;
+        this.favoritesRepository = favoritesRepository;
     }
     public AnimalPost createAnimalPost(AnimalPost animalPost, List<String> photoUrls) {
         System.out.println("Dados recebidos: " + animalPost);
@@ -39,8 +42,8 @@ public class AnimalPostService {
         return savedAnimalPost;
     }
 
-    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrl() {
-        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrl();
+    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrlAndFavoriteStatus(String firebaseUserUid) {
+        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrlAndFavoriteStatus(firebaseUserUid);
         List<AnimalPostResponseDTO> dtos = new ArrayList<>();
 
         for (Object[] row : queryResult) {
@@ -52,13 +55,14 @@ public class AnimalPostService {
             dto.setSex((String) row[4]);
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
+            dto.setFavorite((Integer) row[7] == 1);
             dtos.add(dto);
         }
         return dtos;
     }
 
-    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrlByAnimalType(Long animalTypeId) {
-        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId);
+    public List<AnimalPostResponseDTO> getAnimalPostsWithFirstImageUrlByAnimalType(Long animalTypeId, String firebaseUserUid) {
+        List<Object[]> queryResult = animalPostRepository.getAnimalPostsWithFirstImageUrlByAnimalType(animalTypeId, firebaseUserUid);
         List<AnimalPostResponseDTO> dtos = new ArrayList<>();
 
         for (Object[] row : queryResult) {
@@ -70,6 +74,8 @@ public class AnimalPostService {
             dto.setSex((String) row[4]);
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
+            Object value = row[7];
+            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
             dtos.add(dto);
         }
         return dtos;
@@ -106,6 +112,7 @@ public class AnimalPostService {
             dto.setSex((String) row[4]);
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
+            dto.setFavorite((Integer) row[7] == 1);
             dtos.add(dto);
         }
         return dtos;
