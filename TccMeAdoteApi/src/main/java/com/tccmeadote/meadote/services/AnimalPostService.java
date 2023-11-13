@@ -19,6 +19,10 @@ public class AnimalPostService {
     private final PostPhotosRepository postPhotosRepository;
     private final FavoritesRepository favoritesRepository;
 
+    private boolean isFavorite(Object value) {
+        return value != null && value.equals(1);
+    }
+
     @Autowired
     public AnimalPostService(AnimalPostRepository animalPostRepository, PostPhotosRepository postPhotosRepository, FavoritesRepository favoritesRepository) {
         this.animalPostRepository = animalPostRepository;
@@ -56,7 +60,7 @@ public class AnimalPostService {
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
             Object value = row[7];
-            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
+            dto.setFavorite((Long) value == 1);
             dtos.add(dto);
         }
         return dtos;
@@ -76,7 +80,7 @@ public class AnimalPostService {
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
             Object value = row[7];
-            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
+            dto.setFavorite((Long) value == 1);
             dtos.add(dto);
         }
         return dtos;
@@ -114,7 +118,7 @@ public class AnimalPostService {
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
             Object value = row[7];
-            dto.setFavorite(value instanceof Integer && (Integer) value == 1);
+            dto.setFavorite((Long) value == 1);
             dtos.add(dto);
         }
         return dtos;
