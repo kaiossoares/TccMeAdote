@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tcc_me_adote/app/services/image_picker_service.dart';
+import 'package:tcc_me_adote/app/ui/widgets/adote_bottom_navigation_bar.dart';
 import '../../data/blocs/animal_post_bloc.dart';
 import '../../data/http/http_client.dart';
 import '../../data/models/animal_type_model.dart';
@@ -27,11 +28,15 @@ class _PostPageState extends State<PostPage> {
   late int _selectedCategoryId;
   late String _selectedBreed = '';
   late AnimalPostBloc _animalPostBloc;
+  bool _isLoading = false;
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _animalNameController = TextEditingController();
   final ImagePickerService _imagePickerService = ImagePickerService();
-  final FirebaseStorageService _firebaseStorageService = FirebaseStorageService();
+  final FirebaseStorageService _firebaseStorageService =
+      FirebaseStorageService();
+  final AdoteBottomNavigationBar _adoteBottomNavigationBarState =
+      AdoteBottomNavigationBar();
   List<XFile> _selectedImages = [];
 
   final List<String> _ages = List.generate(27, (index) {
@@ -46,7 +51,8 @@ class _PostPageState extends State<PostPage> {
   List<String> _categories = [];
   List<BreedsModel> _breeds = [];
 
-  final BreedsRepository _breedsRepository = BreedsRepository(client: HttpClient());
+  final BreedsRepository _breedsRepository =
+      BreedsRepository(client: HttpClient());
 
   final List<String> _sex = [
     'Macho',
@@ -71,7 +77,8 @@ class _PostPageState extends State<PostPage> {
 
   void _initializeBloc() {
     IHttpClient httpClient = HttpClient();
-    AnimalPostRepository animalPostRepository = AnimalPostRepository(client: httpClient);
+    AnimalPostRepository animalPostRepository =
+        AnimalPostRepository(client: httpClient);
     _animalPostBloc = AnimalPostBloc(animalPostRepository);
   }
 
@@ -122,17 +129,17 @@ class _PostPageState extends State<PostPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: Color(0xFF3292FF),
+            color: const Color(0xFF3292FF),
             width: 2.0,
           ),
-          color: Color(0xFFF3F3F3),
+          color: const Color(0xFFF3F3F3),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: Icon(Icons.camera_alt_outlined),
-              color: Color(0xFF3292FF),
+              icon: const Icon(Icons.camera_alt_outlined),
+              color: const Color(0xFF3292FF),
               iconSize: 50,
               onPressed: () async {
                 try {
@@ -152,7 +159,7 @@ class _PostPageState extends State<PostPage> {
               },
             ),
             const SizedBox(height: 5),
-            Text(
+            const Text(
               'Incluir fotos',
               style: TextStyle(
                 fontSize: 15,
@@ -222,7 +229,7 @@ class _PostPageState extends State<PostPage> {
                         controller: _animalNameController,
                       ),
                       const SizedBox(height: 30),
-                      Text('Idade:'),
+                      const Text('Idade:'),
                       DropdownButton<String>(
                         isExpanded: true,
                         value: _selectedAge,
@@ -239,7 +246,7 @@ class _PostPageState extends State<PostPage> {
                         }).toList(),
                       ),
                       const SizedBox(height: 30),
-                      Text('Sexo:'),
+                      const Text('Sexo:'),
                       DropdownButton<String>(
                         isExpanded: true,
                         value: _selectedSex,
@@ -256,7 +263,7 @@ class _PostPageState extends State<PostPage> {
                         }).toList(),
                       ),
                       const SizedBox(height: 30),
-                      Text('Categoria:'),
+                      const Text('Categoria:'),
                       DropdownButton<String>(
                         isExpanded: true,
                         value: _selectedCategory,
@@ -276,7 +283,7 @@ class _PostPageState extends State<PostPage> {
                         }).toList(),
                       ),
                       const SizedBox(height: 30),
-                      Text('Raça:'),
+                      const Text('Raça:'),
                       DropdownButton<String>(
                         isExpanded: true,
                         value: _selectedBreed,
@@ -302,47 +309,71 @@ class _PostPageState extends State<PostPage> {
                         maxLines: 3,
                       ),
                       const SizedBox(height: 30),
-                      AdoteButton(
-                        width: double.infinity,
-                        label: 'Postar',
-                        onPressed: () async {
-                          try {
-                            if (_selectedImages.isNotEmpty) {
-                              String animalName = _animalNameController.text;
-                              int animalTypeId = _selectedCategoryId;
-                              String breed = _selectedBreed;
-                              int breedId = await _breedsRepository.getBreedId(breed, animalTypeId);
-                              String sex = _selectedSex;
-                              String age = _selectedAge;
-                              String description = _descriptionController.text;
-                              String? userFirebaseUid = await authService.getUserFirebaseUid();
+                      const SizedBox(height: 30),
+                      _isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : AdoteButton(
+                              width: double.infinity,
+                              label: 'Postar',
+                              onPressed: () async {
+                                try {
+                                  if (_selectedImages.isNotEmpty) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
 
-                              String storagePath = 'postImages';
-                              List<File> imageFiles = _selectedImages.map((xFile) => File(xFile.path)).toList();
-                              List<String> imageUrls = await _firebaseStorageService.uploadImages(imageFiles, storagePath);
+                                    String animalName =
+                                        _animalNameController.text;
+                                    int animalTypeId = _selectedCategoryId;
+                                    String breed = _selectedBreed;
+                                    int breedId = await _breedsRepository
+                                        .getBreedId(breed, animalTypeId);
+                                    String sex = _selectedSex;
+                                    String age = _selectedAge;
+                                    String description =
+                                        _descriptionController.text;
+                                    String? userFirebaseUid =
+                                        await authService.getUserFirebaseUid();
 
-                              List<String> photoUrls = imageUrls;
+                                    String storagePath = 'postImages';
+                                    List<File> imageFiles = _selectedImages
+                                        .map((xFile) => File(xFile.path))
+                                        .toList();
+                                    List<String> imageUrls =
+                                        await _firebaseStorageService
+                                            .uploadImages(
+                                                imageFiles, storagePath);
 
-                              await _animalPostBloc.createAnimalPost(
-                                animalName: animalName,
-                                animalTypeId: animalTypeId,
-                                breedId: breedId,
-                                sex: sex,
-                                age: age,
-                                description: description,
-                                userFirebaseUid: userFirebaseUid,
-                                photoUrls: photoUrls,
-                              );
+                                    List<String> photoUrls = imageUrls;
 
-                              print('URLs das imagens: $imageUrls');
-                            } else {
-                              print('Nenhuma imagem selecionada.');
-                            }
-                          } catch (e) {
-                            print('Erro ao postar: $e');
-                          }
-                        },
-                      ),
+                                    await _animalPostBloc.createAnimalPost(
+                                      animalName: animalName,
+                                      animalTypeId: animalTypeId,
+                                      breedId: breedId,
+                                      sex: sex,
+                                      age: age,
+                                      description: description,
+                                      userFirebaseUid: userFirebaseUid,
+                                      photoUrls: photoUrls,
+                                    );
+
+                                    print('URLs das imagens: $imageUrls');
+                                    AdoteBottomNavigationBar.redirectToSearch(
+                                        context);
+                                  } else {
+                                    print('Nenhuma imagem selecionada.');
+                                  }
+                                } catch (e) {
+                                  print('Erro ao postar: $e');
+                                } finally {
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                }
+                              },
+                            ),
                     ],
                   ),
                 ),

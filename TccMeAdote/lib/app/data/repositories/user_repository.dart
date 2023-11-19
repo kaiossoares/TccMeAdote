@@ -22,6 +22,7 @@ class UserRepository implements IUserRepository {
     Map<String, dynamic> requestBody = {
       'name': user.name,
       'email': user.email,
+      'profilePictureUrl': user.imageUrl,
       'password': user.password,
       'userFirebaseUid': user.userFirebaseUid,
     };

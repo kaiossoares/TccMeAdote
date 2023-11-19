@@ -9,6 +9,15 @@ import '../../pages/animal/profile_page.dart';
 class AdoteBottomNavigationBar extends StatefulWidget {
   @override
   _AdoteBottomNavigationBarState createState() => _AdoteBottomNavigationBarState();
+
+  static void redirectToSearch(BuildContext context) {
+    final state = of(context);
+    state?._redirectToSearch();
+  }
+
+  static _AdoteBottomNavigationBarState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_AdoteBottomNavigationBarState>();
+  }
 }
 
 class _AdoteBottomNavigationBarState extends State<AdoteBottomNavigationBar> {
@@ -25,6 +34,12 @@ class _AdoteBottomNavigationBarState extends State<AdoteBottomNavigationBar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  void _redirectToSearch() {
+    setState(() {
+      _selectedIndex = 0;
     });
   }
 

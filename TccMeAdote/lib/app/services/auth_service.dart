@@ -56,7 +56,7 @@ class AuthService extends ChangeNotifier {
     return regex.hasMatch(email);
   }
 
-  registrar(String name, String email, String senha, BuildContext context) async {
+  Future<void> registrar(String name, String email, String imageUrl, String senha, BuildContext context) async {
     if (!isEmailValid(email)) {
       throw AuthException('Endereço de e-mail inválido.');
     }
@@ -66,7 +66,13 @@ class AuthService extends ChangeNotifier {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       String userFirebaseUid = userCredential.user?.uid ?? '';
 
-      var user = UserModel(name: name, email: email, password: senha, userFirebaseUid: userFirebaseUid);
+      var user = UserModel(
+        name: name,
+        email: email,
+        imageUrl: imageUrl,
+        password: senha,
+        userFirebaseUid: userFirebaseUid,
+      );
 
       var userRepository = UserRepository(client: _httpClient);
       await userRepository.registerUser(user);

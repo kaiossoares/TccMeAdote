@@ -10,6 +10,7 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    private String profilePictureUrl;
     private String password;
     private String userFirebaseUid;
 
@@ -40,11 +41,27 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() { return password; }
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
 
-    public void setPassword(String password) { this.password = password; }
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
 
-    public String getUserFirebaseUid() {return userFirebaseUid;}
+    public String getPassword() {
+        return password;
+    }
 
-    public void setUserFirebaseUid(String userFirebaseUid) {this.userFirebaseUid = userFirebaseUid;}
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUserFirebaseUid() {
+        return userFirebaseUid;
+    }
+
+    public void setUserFirebaseUid(String userFirebaseUid) {
+        this.userFirebaseUid = userFirebaseUid;
+    }
 }
