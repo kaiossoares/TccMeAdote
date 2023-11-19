@@ -28,4 +28,8 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User findByUserFirebaseUid(String userFirebaseUid) {
+        return userRepository.findByUserFirebaseUid(userFirebaseUid);
+    }
 }

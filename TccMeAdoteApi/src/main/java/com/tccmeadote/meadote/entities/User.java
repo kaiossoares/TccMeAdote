@@ -12,6 +12,7 @@ public class User {
     private String email;
     private String profilePictureUrl;
     private String password;
+    @Column(name = "user_firebase_uid")
     private String userFirebaseUid;
 
     public User() {

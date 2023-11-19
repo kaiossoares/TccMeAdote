@@ -23,5 +23,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/{userFirebaseUid}")
+    public ResponseEntity<User> getUserByFirebaseUid(@PathVariable String userFirebaseUid) {
+        User user = userService.findByUserFirebaseUid(userFirebaseUid);
+
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
