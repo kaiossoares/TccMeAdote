@@ -1,5 +1,6 @@
 package com.tccmeadote.meadote.controllers;
 
+import com.tccmeadote.meadote.dto.AnimalPostDetailsDTO;
 import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.services.AnimalPostRequest;
 import com.tccmeadote.meadote.services.AnimalPostService;
@@ -55,5 +56,10 @@ public class AnimalPostController {
     public ResponseEntity<Void> deleteAnimalPostAndPhotos(@PathVariable Long id) {
         animalPostService.deleteAnimalPostAndPhotos(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{postId}")
+    public List<AnimalPostDetailsDTO> getAnimalPostDetailsById(@PathVariable Long postId) {
+        return animalPostService.getAnimalPostDetailsById(postId);
     }
 }

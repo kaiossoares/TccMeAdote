@@ -1,5 +1,6 @@
 package com.tccmeadote.meadote.services;
 
+import com.tccmeadote.meadote.dto.AnimalPostDetailsDTO;
 import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.entities.AnimalPost;
 import com.tccmeadote.meadote.entities.PostPhotos;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalPostService {
@@ -143,5 +146,22 @@ public class AnimalPostService {
 
             animalPostRepository.delete(animalPost);
         }
+    }
+
+    public List<AnimalPostDetailsDTO> getAnimalPostDetailsById(Long postId) {
+        List<Object[]> rawResults = animalPostRepository.findAnimalPostDetailsById(postId);
+
+        return rawResults.stream()
+                .map(result -> new AnimalPostDetailsDTO(
+                        ((Number) result[0]).longValue(),
+                        (String) result[1],
+                        (String) result[2],
+                        (String) result[3],
+                        (String) result[4],
+                        (String) result[5],
+                        (String) result[6],
+                        Arrays.asList(((String) result[7]).split(", "))
+                ))
+                .collect(Collectors.toList());
     }
 }
