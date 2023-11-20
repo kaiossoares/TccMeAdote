@@ -22,15 +22,28 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
+  final TextEditingController confirmarSenhaController = TextEditingController();
   bool loading = false;
   String? imagePath;
   File? imageFile;
 
   void registrar() async {
     setState(() => loading = true);
-    try {
-      String imageUrl = '';
 
+    try {
+      if (senhaController.text != confirmarSenhaController.text) {
+        setState(() => loading = false);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("As senhas não coincidem."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      String imageUrl = '';
       if (imageFile != null) {
         imageUrl = await _firebaseStorageService.uploadProfileImage(imageFile!, 'profileImages');
       }
@@ -44,8 +57,12 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     } on AuthException catch (e) {
       setState(() => loading = false);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -152,17 +169,11 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(
           height: 30,
         ),
-        TextFormField(
-          controller: senhaController,
-          decoration: const InputDecoration(labelText: 'Senha'),
-        ),
+        PasswordFormField(context: context, controller: senhaController, label: 'Senha'),
         const SizedBox(
           height: 30,
         ),
-        TextFormField(
-          decoration:
-          const InputDecoration(labelText: 'Confirma Senha'),
-        ),
+        PasswordFormField(context: context, controller: confirmarSenhaController, label: 'Confirma Senha'),
         const SizedBox(
           height: 30,
         ),
@@ -191,6 +202,41 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Form(
             child: buildForm(),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PasswordFormField extends StatefulWidget {
+  final BuildContext context;
+  final TextEditingController controller;
+  final String label;
+
+  const PasswordFormField({Key? key, required this.context, required this.controller, required this.label})
+      : super(key: key);
+
+  @override
+  _PasswordFormFieldState createState() => _PasswordFormFieldState();
+}
+
+class _PasswordFormFieldState extends State<PasswordFormField> {
+  bool _isObscure = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: widget.controller,
+      obscureText: _isObscure,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        suffixIcon: IconButton(
+          icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              _isObscure = !_isObscure;
+            });
+          },
         ),
       ),
     );

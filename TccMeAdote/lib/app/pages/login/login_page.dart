@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 30,
                     ),
-                    PasswordFormField(context: context, controller: senhaController), // Correção aqui
+                    PasswordFormField(context: context, controller: senhaController),
                     const SizedBox(
                       height: 50,
                     ),
@@ -142,5 +142,3 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
     );
   }
 }
-
-
