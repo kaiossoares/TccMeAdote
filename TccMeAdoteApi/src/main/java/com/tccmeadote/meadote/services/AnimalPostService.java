@@ -8,6 +8,7 @@ import com.tccmeadote.meadote.repositories.FavoritesRepository;
 import com.tccmeadote.meadote.repositories.PostPhotosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class AnimalPostService {
 
         for (String photoUrl : photoUrls) {
             PostPhotos postPhotos = new PostPhotos();
-            postPhotos.setPostId(animalPostId);
+            postPhotos.setAnimalPost(animalPost);
             postPhotos.setPhotoUrl(photoUrl);
             postPhotosRepository.save(postPhotos);
         }
@@ -127,5 +128,20 @@ public class AnimalPostService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    @Transactional
+    public void deleteAnimalPostAndPhotos(Long animalPostId) {
+        AnimalPost animalPost = animalPostRepository.findById(animalPostId).orElse(null);
+
+        if (animalPost != null) {
+            if (animalPost.getPostPhotos() != null) {
+                for (PostPhotos photo : animalPost.getPostPhotos()) {
+                    photo.setAnimalPost(null);
+                }
+            }
+
+            animalPostRepository.delete(animalPost);
+        }
     }
 }

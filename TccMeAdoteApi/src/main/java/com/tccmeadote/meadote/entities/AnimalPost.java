@@ -2,6 +2,8 @@ package com.tccmeadote.meadote.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "animal_posts")
 public class AnimalPost {
@@ -22,6 +24,9 @@ public class AnimalPost {
     private String description;
     @Column(name = "user_firebase_uid")
     private String userFirebaseUid;
+
+    @OneToMany(mappedBy = "animalPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostPhotos> postPhotos;
 
     public AnimalPost(){
 
@@ -89,5 +94,13 @@ public class AnimalPost {
 
     public void setUserFirebaseUid(String userFirebaseUid) {
         this.userFirebaseUid = userFirebaseUid;
+    }
+
+    public List<PostPhotos> getPostPhotos() {
+        return postPhotos;
+    }
+
+    public void setPostPhotos(List<PostPhotos> postPhotoss) {
+        this.postPhotos = postPhotoss;
     }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import '../../services/auth_service.dart';
 import '../http/http_client.dart';
 import '../models/animal_post_model.dart';
@@ -35,7 +37,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
     };
 
     final response = await client.post(
-      url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/post',
+      url: 'http://192.168.15.64:8080/api/posts/post',
       headers: headers,
       body: requestBody,
     );
@@ -107,6 +109,27 @@ class AnimalPostRepository implements IAnimalPostRepository {
     } catch (e) {
       print('Erro ao carregar os dados da API: $e');
       rethrow;
+    }
+  }
+
+  Future<void> deletePost(int postId) async {
+    final url = 'http://192.168.15.64:8080/api/posts/delete/$postId';
+
+    try {
+      final response = await client.delete(url: url, body: {});
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Post excluído com sucesso');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Falha ao excluir o post: ${response.statusCode}');
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print('Erro durante a solicitação: $error');
+      }
     }
   }
 }

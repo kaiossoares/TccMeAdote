@@ -8,12 +8,13 @@ public class PostPhotos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "post_id")
-    private Integer postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private AnimalPost animalPost;
     @Column(name = "photo_url")
     private String photoUrl;
 
-    public PostPhotos(){
+    public PostPhotos() {
 
     }
 
@@ -25,19 +26,19 @@ public class PostPhotos {
         this.id = id;
     }
 
-    public Integer getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Integer postId) {
-        this.postId = postId;
-    }
-
     public String getPhotoUrl() {
         return photoUrl;
     }
 
     public void setPhotoUrl(String photorl) {
         this.photoUrl = photorl;
+    }
+
+    public AnimalPost getAnimalPost() {
+        return animalPost;
+    }
+
+    public void setAnimalPost(AnimalPost animalPost) {
+        this.animalPost = animalPost;
     }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/repositories/favorites_repository.dart';
@@ -37,7 +38,7 @@ class AdoteCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -45,7 +46,7 @@ class AdoteCard extends StatelessWidget {
                   children: <Widget>[
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: Container(
+                      child: SizedBox(
                         width: 180,
                         height: 180,
                         child:
@@ -81,29 +82,29 @@ class AdoteCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
                           animalName ?? 'Nome não disponível',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 16.0, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
-                          '${breedName ?? 'Não especificada'}',
-                          style: TextStyle(fontSize: 14.0),
+                          breedName ?? 'Não especificada',
+                          style: const TextStyle(fontSize: 14.0),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
-                          '$age',
-                          style: TextStyle(fontSize: 16.0),
+                          age,
+                          style: const TextStyle(fontSize: 16.0),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
-                          '$sex',
-                          style: TextStyle(fontSize: 16.0),
+                          sex,
+                          style: const TextStyle(fontSize: 16.0),
                         ),
                       ],
                     ),
@@ -117,8 +118,8 @@ class AdoteCard extends StatelessWidget {
             right: 8.0,
             child: IconButton(
               icon: favorite
-                  ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_border_outlined),
+                  ? const Icon(Icons.favorite)
+                  : const Icon(Icons.favorite_border_outlined),
               color: Colors.blue,
               onPressed: () async {
                 try {
@@ -131,7 +132,9 @@ class AdoteCard extends StatelessWidget {
                     onFavoritePressed!();
                   }
                 } catch (e) {
-                  print('Erro ao manipular favoritos: $e');
+                  if (kDebugMode) {
+                    print('Erro ao manipular favoritos: $e');
+                  }
                 }
               },
             ),

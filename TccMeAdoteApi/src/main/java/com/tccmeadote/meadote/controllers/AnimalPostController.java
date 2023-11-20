@@ -50,4 +50,10 @@ public class AnimalPostController {
         List<AnimalPostResponseDTO> animalPosts = animalPostService.findFavoritesAnimalPostsByUserUid(firebaseUserUid);
         return ResponseEntity.ok(animalPosts);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteAnimalPostAndPhotos(@PathVariable Long id) {
+        animalPostService.deleteAnimalPostAndPhotos(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
