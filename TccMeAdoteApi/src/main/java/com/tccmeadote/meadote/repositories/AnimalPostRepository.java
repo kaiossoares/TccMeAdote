@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AnimalPostRepository extends JpaRepository<AnimalPost, Long> {
@@ -44,4 +45,6 @@ public interface AnimalPostRepository extends JpaRepository<AnimalPost, Long> {
             "WHERE ap.id = :postId " +
             "ORDER BY ap.id", nativeQuery = true)
     List<Object[]> findAnimalPostDetailsById(@Param("postId") Long postId);
+
+    Optional<AnimalPost> findById(Long id);
 }

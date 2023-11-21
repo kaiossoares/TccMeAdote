@@ -74,13 +74,17 @@ class AnimalPostRepository implements IAnimalPostRepository {
             data.cast<Map<String, dynamic>>();
         return animalPosts;
       } else {
-        print(
+        if (kDebugMode) {
+          print(
             'Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        }
         throw Exception(
             'Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro ao carregar os dados da API: $e');
+      if (kDebugMode) {
+        print('Erro ao carregar os dados da API: $e');
+      }
       rethrow;
     }
   }
@@ -101,13 +105,17 @@ class AnimalPostRepository implements IAnimalPostRepository {
             data.cast<Map<String, dynamic>>();
         return animalPosts;
       } else {
-        print(
+        if (kDebugMode) {
+          print(
             'Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        }
         throw Exception(
             'Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Erro ao carregar os dados da API: $e');
+      if (kDebugMode) {
+        print('Erro ao carregar os dados da API: $e');
+      }
       rethrow;
     }
   }
@@ -130,6 +138,53 @@ class AnimalPostRepository implements IAnimalPostRepository {
       if (kDebugMode) {
         print('Erro durante a solicitação: $error');
       }
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPostById(int postId) async {
+    String url = 'http://192.168.15.64:8080/api/posts/$postId';
+
+    try {
+      final response = await client.get(url: url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+        final List<Map<String, dynamic>> posts = data.cast<Map<String, dynamic>>();
+        return posts;
+      } else {
+        if (kDebugMode) {
+          print('Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        }
+        throw Exception('Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao carregar os dados da API: $e');
+      }
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchPostByUserId(int postId) async {
+    String url = 'http://192.168.15.64:8080/api/posts/user/$postId';
+
+    try {
+      final response = await client.get(url: url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> postData = json.decode(utf8.decode(response.bodyBytes));
+        return postData;
+      } else {
+        if (kDebugMode) {
+          print('Erro ao carregar os dados da API - Status Code: ${response.statusCode}');
+        }
+        throw Exception('Falha ao carregar os dados da API - Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Erro ao carregar os dados da API: $e');
+      }
+      rethrow;
     }
   }
 }

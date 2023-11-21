@@ -4,6 +4,7 @@ import '../../data/http/http_client.dart';
 import '../../data/repositories/animal_post_repository.dart';
 import '../../ui/widgets/adote_card.dart';
 import '../../data/repositories/favorites_repository.dart';
+import 'details_post.dart';
 
 class FavoritesPage extends StatefulWidget {
   @override
@@ -60,31 +61,43 @@ class _FavoriteListPageState extends State<FavoritesPage> {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(
-              child: Text('Erro ao carregar os posts favoritos: ${snapshot.error}'));
+              child: Text(
+                  'Erro ao carregar os posts favoritos: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(child: Text('Nenhum post favorito disponível.'));
         } else {
           return ListView(
             children: snapshot.data!.map((post) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: AdoteCard(
-                  postId: post['id'],
-                  animalName: post['animalName'],
-                  animalType: post['animalType'],
-                  breedName: post['breedName'] ?? 'Não especificada',
-                  sex: post['sex'],
-                  age: post['age'],
-                  firstImageUrl: post['firstImageUrl'],
-                  favorite: post['favorite'] ?? false,
-                  favoriteRepository: FavoriteRepository(client: HttpClient()),
-                  onFavoritePressed: () {
-                    setState(() {
-                      post['favorite'] = !(post['favorite'] ?? false);
-                    });
-                  },
-                ),
-              );
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetailsPost(postId: post['id'].toString()),
+                        ),
+                      );
+                    },
+                    child: AdoteCard(
+                      postId: post['id'],
+                      animalName: post['animalName'],
+                      animalType: post['animalType'],
+                      breedName: post['breedName'] ?? 'Não especificada',
+                      sex: post['sex'],
+                      age: post['age'],
+                      firstImageUrl: post['firstImageUrl'],
+                      favorite: post['favorite'] ?? false,
+                      favoriteRepository:
+                          FavoriteRepository(client: HttpClient()),
+                      onFavoritePressed: () {
+                        setState(() {
+                          post['favorite'] = !(post['favorite'] ?? false);
+                        });
+                      },
+                    ),
+                  ));
             }).toList(),
           );
         }
@@ -92,4 +105,3 @@ class _FavoriteListPageState extends State<FavoritesPage> {
     );
   }
 }
-
