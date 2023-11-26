@@ -65,7 +65,7 @@ public class AnimalPostService {
             dto.setAge((String) row[5]);
             dto.setFirstImageUrl((String) row[6]);
             Object value = row[7];
-            dto.setFavorite((Long) value == 1);
+            dto.setFavorite(((Number) value).intValue() == 1);
             dtos.add(dto);
         }
         return dtos;
