@@ -37,7 +37,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
     };
 
     final response = await client.post(
-      url: 'http://192.168.15.64:8080/api/posts/post',
+      url: 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/post',
       headers: headers,
       body: requestBody,
     );
@@ -121,7 +121,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
   }
 
   Future<void> deletePost(int postId) async {
-    final url = 'http://192.168.15.64:8080/api/posts/delete/$postId';
+    final url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/delete/$postId';
 
     try {
       final response = await client.delete(url: url, body: {});
@@ -142,7 +142,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
   }
 
   Future<List<Map<String, dynamic>>> fetchPostById(int postId) async {
-    String url = 'http://192.168.15.64:8080/api/posts/$postId';
+    String url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/$postId';
 
     try {
       final response = await client.get(url: url);
@@ -166,7 +166,7 @@ class AnimalPostRepository implements IAnimalPostRepository {
   }
 
   Future<Map<String, dynamic>> fetchPostByUserId(int postId) async {
-    String url = 'http://192.168.15.64:8080/api/posts/user/$postId';
+    String url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/user/$postId';
 
     try {
       final response = await client.get(url: url);
@@ -185,6 +185,17 @@ class AnimalPostRepository implements IAnimalPostRepository {
         print('Erro ao carregar os dados da API: $e');
       }
       rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchReceiverUserData(String postId) async {
+    String url = 'https://tcc-meadote-api-062678c8588e.herokuapp.com/api/posts/user/$postId';
+
+    final response = await client.get(url: url);
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Erro ao obter dados do usuário');
     }
   }
 }

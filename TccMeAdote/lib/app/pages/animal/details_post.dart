@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc_me_adote/app/data/repositories/animal_post_repository.dart';
 
 import '../../data/http/http_client.dart';
+import 'chat_page_conversation.dart';
 
 class DetailsPost extends StatefulWidget {
   final String postId;
@@ -272,7 +273,7 @@ class _DetailsPostState extends State<DetailsPost> {
           const SizedBox(width: 10),
           Text(
             userName,
-            style: TextStyle(fontSize: 22),
+            style: const TextStyle(fontSize: 22),
           ),
         ],
       ),
@@ -282,19 +283,55 @@ class _DetailsPostState extends State<DetailsPost> {
   Widget buildChatButton() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: ElevatedButton.icon(
-        onPressed: () {
-        },
-        icon: const Icon(Icons.chat),
-        label: const Text('Chat'),
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),
+      child: Stack(
+        children: [
+          ElevatedButton.icon(
+            onPressed: () async {
+              int postId = int.tryParse(widget.postId) ?? 0;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16.0),
+                        Text("Carregando..."),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              try {
+                final userData = await _animalPostRepository.fetchReceiverUserData(postId.toString());
+                Navigator.pop(context); // Fecha o AlertDialog após a conclusão da operação
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatPageConversation(
+                      receiverUserEmail: userData['email'],
+                      receiverUserId: userData['userFirebaseUid'],
+                    ),
+                  ),
+                );
+              } catch (error) {
+                Navigator.pop(context); // Fecha o AlertDialog em caso de erro
+                print("Erro: $error");
+              }
+            },
+            icon: const Icon(Icons.chat),
+            label: const Text('Chat'),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              minimumSize: const Size(double.infinity, 48.0),
             ),
           ),
-          minimumSize: MaterialStateProperty.all(Size(double.infinity, 48.0)),
-        ),
+        ],
       ),
     );
   }

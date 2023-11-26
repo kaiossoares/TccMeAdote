@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../data/http/http_client.dart';
@@ -12,6 +13,7 @@ class AuthException implements Exception {
 
 class AuthService extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  final  FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   String? userFirebaseUid;
   User? usuario;
   bool isLoading = true;
@@ -66,6 +68,11 @@ class AuthService extends ChangeNotifier {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
       String userFirebaseUid = userCredential.user?.uid ?? '';
 
+      _fireStore.collection('users').doc(userCredential.user!.uid).set({
+        'uid': userCredential.user!.uid,
+        'email': email,
+      });
+
       var user = UserModel(
         name: name,
         email: email,
@@ -94,8 +101,17 @@ class AuthService extends ChangeNotifier {
       throw AuthException('Endereço de e-mail inválido.');
     }
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: senha);
+
+      UserCredential userCredential =
+        await _auth.signInWithEmailAndPassword(email: email, password: senha);
+
       _getUser();
+
+      _fireStore.collection('users').doc(userCredential.user!.uid).set({
+        'uid': userCredential.user!.uid,
+        'email': email,
+      }, SetOptions(merge: true));
+
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

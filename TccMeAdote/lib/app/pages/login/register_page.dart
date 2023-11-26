@@ -179,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         Center(
           child: loading
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : AdoteButton(
             width: double.infinity,
             label: 'Cadastrar',
