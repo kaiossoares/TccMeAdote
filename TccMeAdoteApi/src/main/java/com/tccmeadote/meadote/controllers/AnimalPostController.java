@@ -64,8 +64,8 @@ public class AnimalPostController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteAnimalPostAndPhotos(@PathVariable Long id) {
-        animalPostService.deleteAnimalPostAndPhotos(id);
+    public ResponseEntity<Void> deleteAnimalPostAndRelatedEntities(@PathVariable Long id) {
+        animalPostService.deleteAnimalPostAndRelatedEntities(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

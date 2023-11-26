@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tcc_me_adote/app/data/repositories/animal_post_repository.dart';
+import 'package:tcc_me_adote/app/pages/animal/settings_page.dart';
 
 import '../../data/http/http_client.dart';
 import '../../services/auth_service.dart';
@@ -155,46 +156,80 @@ class _ProfilePageState extends State<ProfilePage> {
     ],
   );
 
-  Widget buildProfileImage() => CircleAvatar(
-    radius: profileHeight / 2,
-    backgroundColor: Colors.grey.shade800,
-    child: Container(
-      width: double.infinity,
-      height: double.infinity,
-      padding: const EdgeInsets.all(6),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-      ),
-      child: ClipOval(
-        child: Image.network(
-          fotoPerfilUrl,
-          fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            } else {
-              return Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                      : null,
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              );
-            }
-          },
-          errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-            return Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.white,
-                size: profileHeight,
+  Widget buildProfileImage() => Center(
+    child: Stack(
+      children: [
+        CircleAvatar(
+          radius: profileHeight / 2,
+          backgroundColor: Colors.grey.shade800,
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            padding: const EdgeInsets.all(6),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: ClipOval(
+              child: Image.network(
+                fotoPerfilUrl,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    );
+                  }
+                },
+                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                  return Center(
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.white,
+                      size: profileHeight,
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 4,
+                  color: Colors.white,
+                ),
+                color: Colors.blue,
+              ),
+              child: const Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        )
+      ],
     ),
   );
 

@@ -292,7 +292,7 @@ class _DetailsPostState extends State<DetailsPost> {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return AlertDialog(
+                  return const AlertDialog(
                     content: Row(
                       children: [
                         CircularProgressIndicator(),
@@ -306,7 +306,7 @@ class _DetailsPostState extends State<DetailsPost> {
 
               try {
                 final userData = await _animalPostRepository.fetchReceiverUserData(postId.toString());
-                Navigator.pop(context); // Fecha o AlertDialog após a conclusão da operação
+                Navigator.pop(context);
 
                 Navigator.push(
                   context,
@@ -318,7 +318,7 @@ class _DetailsPostState extends State<DetailsPost> {
                   ),
                 );
               } catch (error) {
-                Navigator.pop(context); // Fecha o AlertDialog em caso de erro
+                Navigator.pop(context);
                 print("Erro: $error");
               }
             },

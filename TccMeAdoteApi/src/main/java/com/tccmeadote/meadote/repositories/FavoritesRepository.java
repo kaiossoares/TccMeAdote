@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
     Optional<Favorites> findByUserFirebaseUidAndPostId(String userFirebaseUid, Long postId);
+
+    void deleteFavoriteByPostId(Long postId);
 }

@@ -3,6 +3,7 @@ package com.tccmeadote.meadote.services;
 import com.tccmeadote.meadote.dto.AnimalPostDetailsDTO;
 import com.tccmeadote.meadote.dto.AnimalPostResponseDTO;
 import com.tccmeadote.meadote.entities.AnimalPost;
+import com.tccmeadote.meadote.entities.Favorites;
 import com.tccmeadote.meadote.entities.PostPhotos;
 import com.tccmeadote.meadote.repositories.AnimalPostRepository;
 import com.tccmeadote.meadote.repositories.FavoritesRepository;
@@ -134,7 +135,7 @@ public class AnimalPostService {
     }
 
     @Transactional
-    public void deleteAnimalPostAndPhotos(Long animalPostId) {
+    public void deleteAnimalPostAndRelatedEntities(Long animalPostId) {
         AnimalPost animalPost = animalPostRepository.findById(animalPostId).orElse(null);
 
         if (animalPost != null) {
@@ -143,6 +144,8 @@ public class AnimalPostService {
                     photo.setAnimalPost(null);
                 }
             }
+
+            favoritesRepository.deleteFavoriteByPostId(animalPostId);
 
             animalPostRepository.delete(animalPost);
         }
